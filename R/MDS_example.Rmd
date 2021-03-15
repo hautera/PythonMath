@@ -1,0 +1,100 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+par(pty="s")
+```
+
+```{r}
+short_city_names = c("Bellingham", "Seattle", "Portland", "Van. Ca", "Van. Wa", "Spokane")
+short_distances <- matrix(c(0,127,361,75,347,394,127,0,234, 193, 220, 367, 361, 234, 0, 416,12,465,75,193,416,0,404,455,347,220,12,404,0,458,394,367,465,455,458,0),nrow=6, ncol=6, dimnames = list(short_city_names, short_city_names))
+short_distances
+```
+```{r}
+long_city_names = c("Seattle", "LA", "SF", "London", "Paris", "Tokyo", "CT")
+long_distances <- matrix(c(0,1545,1092,7700,8041, 7689, 16424, 1545, 0,559,8756, 9085,8806,16050,1092,559,0,8616,8952,8262,16485,7700,8756,8616,0,342,9566,9669,8041,9085,8952,342,0,9719,9341,7689,8806,8262,9566,9719,0,14741,16424,16050,16485,9669,9341,14741,0), nrow = 7, ncol=7, dimnames=list(long_city_names, long_city_names))
+long_distances
+
+```
+
+```{r}
+par(pty="s")
+short_mds = cmdscale(short_distances, k=3)
+plot(short_mds, xlim=c(-200,300), ylim=c(-200, 300), xlab="X", ylab="Y")
+title(main="Short City MDS 3D")
+text(short_mds, label=short_city_names, pos=1)
+short_mds
+```
+
+
+```{r}
+eigen_values = eigen(short_distances, TRUE)$values
+plot(eigen_values, ylab="Eigen Values")
+title(main="Eigenvalues of Short Distance Matrix")
+```
+
+```{r}
+par(pty="s")
+list_of_distances = short_distances[lower.tri(short_distances, diag=FALSE)]
+plot(list_of_distances, dist(short_mds), xlim=c(0,500), ylim=c(0,500), xlab="Original Distances", ylab="MDS Distances 3D")
+title(main="MDS Distance 3D vs. Original Distance")
+short_distances
+dist(short_mds)
+```
+
+
+```{r}
+hist(list_of_distances)
+hist(short_distances)
+
+```
+
+
+```{r}
+par(pty="s")
+long_mds = cmdscale(long_distances, k=1)
+long_mds
+plot(long_mds, xlim=c(-7000, 11000),ylim=c(-7000, 11000), xlab="X", ylab='Y')
+text(long_mds, label=long_city_names, pos=1)
+title(main="Long City MDS 2D")
+```
+```{r}
+eigen_valuesl = eigen(long_distances, TRUE)$values
+plot(eigen_valuesl)
+```
+```{r}
+par(pty="s")
+list_of_distancesl = long_distances[lower.tri(long_distances, diag=FALSE)]
+list_of_distancesl
+plot(list_of_distancesl, dist(long_mds), xlim=c(0,17000), ylim=c(0,17000), xlab="Original Distances", ylab="MDS Distance")
+title(main="MDS Distance 3D vs. Original Distance")
+
+```
+```{r}
+c2 <- rgb(255,0,203, max = 255, alpha = 80, names = "lt.pink")
+c1 <- rgb(0,216,230,max = 255, alpha = 80, names = "lt.blue")
+ori <- hist(list_of_distancesl, col=c2, main="Frequency of distance in MDS 1D model (Blue) and Original Distances (Pink)")
+ch <- hist(dist(long_mds), col=c1)
+plot(ori,col=c2)
+plot(ch, add=TRUE, col=c1)
+
+```
+
+
+
+
+```{r}
+cmdscale(short_distances, eig=TRUE,k=1)$GOF
+cmdscale(long_distances, eig=TRUE,k=1)$GOF
+cmdscale(short_distances, eig=TRUE)$GOF
+cmdscale(long_distances, eig=TRUE)$GOF
+cmdscale(short_distances,eig=TRUE,k=3)$GOF
+cmdscale(long_distances, k=3, eig=TRUE)$GOF
+```
+
