@@ -7,7 +7,7 @@ PI = 3.141
 def integrate(a, b, y):
 	n = len(y)
 	s = np.sum(y) - (y[0]/2 + y[-1]/2) # simpons rule
-	return ( b - a ) * s / n
+	return ( b - a ) * s /(3 * n)
 
 
 def calc(x,y,num=5):
@@ -29,6 +29,13 @@ def calc(x,y,num=5):
 
 if __name__ == '__main__':
 	parser = arg.ArgumentParser(description="Calculates the Fourier series of a function")
+	arguments = ["a", "b", "sine", "cosine", "imaginary", "error"]
+	for arg in arguments:
+		args = parser.add_argument(arg)
+
+	for arg in arguments:
+		print(args[arg]) 
+
 	n = 10
 
 	y = np.linspace(-1, 1, num=1000) 
